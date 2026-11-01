@@ -140,12 +140,12 @@ export class Match {
     const m = levelMult(level);
     const e = this.addEntity({
       kind: u.building ? 'building' : 'unit', side, defId: templateId, cardId, level,
-      x, y, radius: u.radius, mass: u.mass, air: !!u.air, riverJump: !!u.riverJump,
+      x, y, radius: u.radius, mass: u.mass, air: !!u.air,
       hp: Math.round(u.hp * m), maxHp: Math.round(u.hp * m),
       shield: Math.round((u.shield || 0) * m), maxShield: Math.round((u.shield || 0) * m),
       damage: Math.round(u.damage * m), hitSpeed: u.hitSpeed, range: u.range,
       sight: Math.max(DEFAULT_SIGHT, u.range + 1), speed: u.speed, targets: u.targets,
-      splash: u.splash || 0, projectile: u.projectile || null, ability: u.ability || null,
+      splash: u.splash || 0, spin: u.spin || 0, projectile: u.projectile || null, ability: u.ability || null,
       deathSpawn: u.deathSpawn || null, deathDamage: u.deathDamage ? { ...u.deathDamage, damage: Math.round(u.deathDamage.damage * m) } : null,
       lifetime: u.lifetime || 0, spawn: u.spawn || null, spawnT: u.spawn ? u.spawn.firstDelay : 0,
       deployT: deployTime, firstStrikeReady: !!(u.ability && u.ability.type === 'firstStrike'),
@@ -402,6 +402,10 @@ export class Match {
         speed: e.projectile.speed, damage: dmg, splash: e.splash, targets: e.targets, air: e.air,
         traveled: 0, total: Math.max(0.1, dist(e.x, e.y, target.x, target.y)),
       });
+    } else if (e.spin > 0) {
+      // Ataque giratório: atinge todos ao redor do atacante.
+      this.areaDamage(e.side, e.x, e.y, e.spin + e.radius, dmg, { targets: e.targets });
+      this.emit({ type: 'impact', kind: 'spin', x: e.x, y: e.y, radius: e.spin + e.radius, side: e.side });
     } else if (e.splash > 0) {
       this.areaDamage(e.side, target.x, target.y, e.splash, dmg, { targets: e.targets });
     } else {
@@ -480,6 +484,13 @@ export class Match {
         this.applyDamage(e, Math.round(dmg * factor), s.side, true);
       }
       if (sp.freeze) e.frozenT = Math.max(e.frozenT, sp.freeze);
+      if (sp.stun) {
+        e.frozenT = Math.max(e.frozenT, sp.stun);
+        e.stunT = sp.stun;
+        e.rampTime = 0;
+        e.rampStage = 0;
+        e.attackCd = Math.max(e.attackCd, e.hitSpeed * 0.5);
+      }
       if (sp.knockback && e.kind === 'unit' && e.mass < 15) {
         const dx = e.x - s.x;
         const dy = e.y - s.y;

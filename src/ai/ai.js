@@ -152,7 +152,7 @@ export class AIController {
     const airShare = L.threat > 0 ? L.air / L.threat : 0;
     const hitsAir = u.targets === 'both';
     if (airShare > 0.4) s += hitsAir ? 4 : -6;
-    if (L.swarm >= 3) s += u.splash ? 4 : card.count > 1 ? 0.5 : -1;
+    if (L.swarm >= 3) s += u.splash || u.spin ? 4 : card.count > 1 ? 0.5 : -1;
     if (L.tank > 2) {
       if (u.ability && u.ability.type === 'ramp') s += 5;
       if (card.count >= 3) s += 2.5;

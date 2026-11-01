@@ -27,18 +27,18 @@ Abra o endereço no navegador (desktop ou celular). Qualquer servidor estático 
 - Destrua a **Torre do Rei** inimiga para vencer na hora. Se o tempo (3 min) acabar, vence quem tiver mais **coroas** (uma por torre destruída).
 - Em caso de empate, vem a **prorrogação** de 1 min com morte súbita. Depois dela, vence quem preservou mais vida nas torres; se a vida for igual, a partida termina empatada.
 - **Éter** regenera até 10. No último minuto e na prorrogação, regenera em dobro.
-- Arraste uma carta até a arena, ou toque na carta e depois no local. No teclado, as teclas `1`–`4` selecionam cartas e `Esc`/`P` pausam.
+- Arraste uma carta até a arena, ou toque na carta e depois no local. A tropa aparece exatamente onde você tocou; se o toque cair um pouco dentro do rio ou sobre uma torre, ela vai para o ponto válido mais próximo. No teclado, as teclas `1`–`4` selecionam cartas e `Esc`/`P` pausam.
 - Tropas e construções só podem ser posicionadas no seu lado do rio. Ao derrubar uma torre auxiliar inimiga, você também pode posicioná-las naquela lateral do campo inimigo. Feitiços podem ser lançados em qualquer lugar.
 
 ## Funcionalidades
 
 - **Partida completa contra a IA**: contagem regressiva, cronômetro, Éter em dobro, prorrogação, desempate, tela de resultado com estatísticas, pausa e desistência.
-- **19 cartas** com papéis distintos: tanque de cerco, enxames terrestre e aéreo, unidades à distância e corpo a corpo, construções (defensiva e geradora), feitiços de dano, controle e suporte, e especialistas (antitanque com dano crescente, cavaleiro que mira construções e salta o rio, grifo com mergulho).
-- **Combate real**: movimentação por pontes, colisões, seleção de alvos (terrestre/aéreo/construções), projéteis teleguiados, dano em área, escudo, congelamento, cura, aceleração, efeitos ao morrer e unidades geradas.
+- **25 cartas** nos arquétipos clássicos do gênero, todas com nome, arte e personagens próprios: tanques que miram construções (Gigante da Colina, Golem Rúnico), enxames terrestres e aéreos (Esqueletos Errantes, Diabretes, Corvos), tropas à distância (Arqueiras, Atiradora Real, Mago), corpo a corpo (Escudeiro, Berserker com ataque giratório), construções (Canhão, Balista, Forja), feitiços de dano, controle e suporte (Faísca Arcana com atordoamento, Meteoro, Saraivada, Geada, Fonte de Cura, Hino de Guerra) e especialistas (Feiticeira com dano crescente, Cavaleiro Javali, Grifo com mergulho).
+- **Combate real**: tropas terrestres só atravessam o rio pelas pontes (o corpo inteiro precisa estar sobre as tábuas), colisões, seleção de alvos (terrestre/aéreo/construções), projéteis teleguiados, dano em área, escudo, congelamento, cura, aceleração, efeitos ao morrer e unidades geradas.
 - **IA** em três dificuldades (Fácil, Normal, Difícil). Ela lê o estado da partida e decide entre defender a lane ameaçada com contra-escolhas, lançar feitiços que valham o custo, finalizar torres, contra-atacar com tropas sobreviventes, montar ataques com tanque e evitar desperdício de Éter.
 - **Progressão**: XP e nível do jogador, moedas, troféus, desbloqueio de cartas por nível, coleção, melhoria de cartas (cópias + moedas), 3 baralhos editáveis, baús com tempo de destrancamento, loja diária, presente diário, missões diárias, conquistas e histórico das últimas 20 partidas.
 - **Persistência** em `localStorage` com validação e saneamento. Um salvamento corrompido é preservado como backup e o jogo reinicia sem travar.
-- **Apresentação**: arte vetorial procedural (unidades, torres, retratos das cartas), 3 arenas temáticas, partículas, anéis de impacto, números de dano, tremor de tela, banners de eventos. Áudio sintetizado em tempo real (efeitos e trilha), com volumes independentes de música e efeitos.
+- **Apresentação**: personagens no estilo chibi de jogos mobile, com contorno e sombreamento; torres de pedra com estandartes; arena com gramado, calçamento, rio animado e pontes de madeira; cartas com moldura por raridade e gota de Éter. Toda a arte é procedural (unidades, torres, retratos das cartas), 3 arenas temáticas, partículas, anéis de impacto, números de dano, tremor de tela, banners de eventos. Áudio sintetizado em tempo real (efeitos e trilha), com volumes independentes de música e efeitos.
 - **Interface** responsiva (celular e desktop), tutorial inicial, configurações (volumes, mudo, números de dano, efeitos reduzidos).
 
 ## Arquitetura

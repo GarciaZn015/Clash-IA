@@ -13,6 +13,7 @@ export class Effects {
     this.arrows = [];
     this.beams = [];
     this.slashes = [];
+    this.zaps = [];
     this.shake = 0;
     this.flash = 0;
     this.banner = null;
@@ -77,7 +78,10 @@ export class Effects {
         this.text(ev.x, ev.y - 0.8, 'Escudo!', '#cfe3ff', 0.35);
         break;
       case 'impact':
-        if (ev.radius > 0) {
+        if (ev.kind === 'spin') {
+          this.ring(ev.x, ev.y, ev.radius, 'rgba(255,255,255,0.8)', 0.25, 0.12);
+          this.burst(ev.x, ev.y, { count: 6, color: '#e6e0d0', speed: 3, life: 0.3, size: 0.1 });
+        } else if (ev.radius > 0) {
           const col = ev.kind === 'fire' ? '#ff8a3c' : ev.kind === 'rune' ? '#8ff0ff' : '#ffcf6a';
           this.ring(ev.x, ev.y, ev.radius, col, 0.35, 0.18);
           this.burst(ev.x, ev.y, { count: 10, color: col, speed: 3, life: 0.45, size: 0.14 });
@@ -145,6 +149,12 @@ export class Effects {
       case 'fonte':
         this.ring(ev.x, ev.y, ev.radius, '#7cf0a0', 0.6, 0.2);
         break;
+      case 'faisca':
+        this.zaps.push({ x: ev.x, y: ev.y, radius: ev.radius, life: 0.3, max: 0.3 });
+        this.flash = Math.max(this.flash, 0.08);
+        this.ring(ev.x, ev.y, ev.radius, '#bfe8ff', 0.4, 0.2);
+        this.burst(ev.x, ev.y, { count: 18, color: '#d8f2ff', speed: 4, life: 0.4, size: 0.1 });
+        break;
       case 'hino':
         this.ring(ev.x, ev.y, ev.radius, '#ffd257', 0.6, 0.2);
         this.burst(ev.x, ev.y, { count: 20, color: '#ffd257', speed: 3, life: 0.6, size: 0.12, up: 2 });
@@ -190,6 +200,7 @@ export class Effects {
     tick(this.arrows);
     tick(this.beams);
     tick(this.slashes);
+    tick(this.zaps);
     for (const m of this.meteors) m.t += dt;
     this.meteors = this.meteors.filter((m) => m.t < m.dur);
     if (this.banner) {

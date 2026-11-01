@@ -145,6 +145,10 @@ export class AudioEngine {
       case 'heal': [0, 4, 7, 12].forEach((n, i) => this.tone({ freq: midi(72 + n), type: 'sine', dur: 0.3, vol: 0.08, when: i * 0.06 })); break;
       case 'rage': [0, 3, 7].forEach((n, i) => this.tone({ freq: midi(60 + n), type: 'sawtooth', dur: 0.2, vol: 0.06, when: i * 0.05 })); break;
       case 'shield': this.tone({ freq: 900, to: 300, type: 'square', dur: 0.15, vol: 0.1 }); break;
+      case 'zap':
+        this.noise({ dur: 0.18, vol: 0.25, filter: 'highpass', freq: 2500 });
+        this.tone({ freq: 1200, to: 200, type: 'sawtooth', dur: 0.15, vol: 0.08 });
+        break;
       case 'beep': this.tone({ freq: 880, type: 'square', dur: 0.1, vol: 0.12 }); break;
       case 'horn':
         this.tone({ freq: midi(57), type: 'sawtooth', dur: 0.6, vol: 0.12, attack: 0.05 });
@@ -237,7 +241,7 @@ export function soundForEvent(ev) {
     case 'attack': {
       if (ev.beam) return 'beam';
       if (ev.melee) return ev.defId === 'lobo' || ev.defId === 'diabrete' || ev.defId === 'corvo' ? 'bite' : 'sword';
-      if (ev.defId === 'king') return 'cannon';
+      if (ev.defId === 'king' || ev.defId === 'canhao') return 'cannon';
       if (ev.defId === 'bombardeiro') return 'whoosh';
       if (ev.defId === 'mago') return 'magic';
       if (ev.defId === 'dragonete') return 'fire';
@@ -249,7 +253,7 @@ export function soundForEvent(ev) {
     case 'towerDestroyed': return 'tower';
     case 'shieldBreak': return 'shield';
     case 'spell':
-      if (ev.stage === 'impact') return { meteoro: 'meteor', saraivada: 'volley', geada: 'freeze', fonte: 'heal', hino: 'rage' }[ev.cardId] || null;
+      if (ev.stage === 'impact') return { meteoro: 'meteor', saraivada: 'volley', geada: 'freeze', fonte: 'heal', hino: 'rage', faisca: 'zap' }[ev.cardId] || null;
       return ev.cardId === 'meteoro' ? 'whoosh' : null;
     case 'phase': return ev.phase === 'playing' ? 'horn' : ev.phase === 'overtime' ? 'horn' : null;
     default: return null;

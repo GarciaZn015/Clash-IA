@@ -50,7 +50,7 @@ export const CARDS = [
     id: 'javali', name: 'Cavaleiro Javali', type: 'troop', cost: 4, rarity: 'rara', unlockLevel: 1,
     unitId: 'javali', count: 1, tags: ['terrestre', 'rápida', 'mira construções'],
     role: 'Ataque relâmpago',
-    description: 'Ignora tropas, salta o rio e corre direto para as construções inimigas.',
+    description: 'Ignora tropas e corre pela ponte direto para as construções inimigas.',
   },
   {
     id: 'saraivada', name: 'Saraivada', type: 'spell', cost: 3, rarity: 'comum', unlockLevel: 1,
@@ -62,7 +62,7 @@ export const CARDS = [
     id: 'meteoro', name: 'Meteoro Rúnico', type: 'spell', cost: 4, rarity: 'rara', unlockLevel: 2,
     tags: ['feitiço', 'dano em área'], role: 'Dano pesado em área',
     description: 'Uma rocha encantada cai do céu, causa dano alto e empurra tropas.',
-    spell: { radius: 2.5, damage: 400, delay: 1.0, towerFactor: 0.35, knockback: 1.2, travel: true },
+    spell: { radius: 2.5, damage: 440, delay: 1.0, towerFactor: 0.35, knockback: 1.2, travel: true },
   },
   {
     id: 'balista', name: 'Balista', type: 'building', cost: 4, rarity: 'rara', unlockLevel: 2,
@@ -123,6 +123,42 @@ export const CARDS = [
     unitId: 'feiticeira', count: 1, tags: ['terrestre', 'à distância', 'antitanque', 'antiaéreo'],
     role: 'Derrubadora de tanques',
     description: 'Um raio contínuo cujo dano cresce muito enquanto mantém o mesmo alvo.',
+  },
+  {
+    id: 'esqueletos', name: 'Esqueletos Errantes', type: 'troop', cost: 1, rarity: 'comum', unlockLevel: 1,
+    unitId: 'esqueleto', count: 3, tags: ['terrestre', 'enxame', 'ciclo'],
+    role: 'Distração barata',
+    description: 'Três esqueletos frágeis por apenas 1 de Éter. Ótimos para distrair tanques e girar o baralho.',
+  },
+  {
+    id: 'faisca', name: 'Faísca Arcana', type: 'spell', cost: 2, rarity: 'comum', unlockLevel: 1,
+    tags: ['feitiço', 'dano em área', 'atordoamento'], role: 'Resposta instantânea',
+    description: 'Descarga instantânea que causa dano, atordoa por 0,5s e reinicia ataques que carregam.',
+    spell: { radius: 2.5, damage: 120, stun: 0.5, delay: 0, towerFactor: 0.35 },
+  },
+  {
+    id: 'canhao', name: 'Canhão de Bronze', type: 'building', cost: 3, rarity: 'comum', unlockLevel: 2,
+    unitId: 'canhao', count: 1, tags: ['construção', 'defensiva'],
+    role: 'Defesa barata',
+    description: 'Construção defensiva barata contra tropas terrestres. Atrai gigantes e golens para o centro.',
+  },
+  {
+    id: 'atiradora', name: 'Atiradora Real', type: 'troop', cost: 4, rarity: 'rara', unlockLevel: 3,
+    unitId: 'atiradora', count: 1, tags: ['terrestre', 'à distância', 'antiaéreo'],
+    role: 'Dano à distância de alvo único',
+    description: 'Besta pesada de longo alcance. Derruba unidades aéreas e apoia avanços.',
+  },
+  {
+    id: 'gigante', name: 'Gigante da Colina', type: 'troop', cost: 5, rarity: 'rara', unlockLevel: 3,
+    unitId: 'gigante', count: 1, tags: ['terrestre', 'tanque', 'mira construções'],
+    role: 'Tanque de avanço',
+    description: 'Ogro resistente que marcha direto para as construções. Proteja-o com tropas de suporte.',
+  },
+  {
+    id: 'berserker', name: 'Berserker do Norte', type: 'troop', cost: 4, rarity: 'epica', unlockLevel: 4,
+    unitId: 'berserker', count: 1, tags: ['terrestre', 'corpo a corpo', 'dano em área'],
+    role: 'Destruidor de enxames',
+    description: 'Gira o machado e atinge todos os inimigos terrestres ao redor de uma vez.',
   },
 ];
 

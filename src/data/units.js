@@ -5,12 +5,12 @@
 export const UNITS = {
   escudeiro: {
     name: 'Escudeiro de Ferro',
-    hp: 760, shield: 240, damage: 85, hitSpeed: 1.1, range: 0.6, speed: 1.0,
+    hp: 800, shield: 240, damage: 92, hitSpeed: 1.1, range: 0.6, speed: 1.0,
     radius: 0.5, mass: 6, targets: 'ground',
   },
   arqueira: {
     name: 'Arqueira do Bosque',
-    hp: 200, damage: 56, hitSpeed: 1.0, range: 5.0, speed: 1.0,
+    hp: 190, damage: 51, hitSpeed: 1.0, range: 5.0, speed: 1.0,
     radius: 0.4, mass: 3, targets: 'both', projectile: { kind: 'arrow', speed: 12 },
   },
   lobo: {
@@ -41,7 +41,7 @@ export const UNITS = {
   javali: {
     name: 'Cavaleiro Javali',
     hp: 980, damage: 170, hitSpeed: 1.5, range: 0.7, speed: 2.0,
-    radius: 0.55, mass: 6, targets: 'buildings', riverJump: true,
+    radius: 0.55, mass: 6, targets: 'buildings',
   },
   golem: {
     name: 'Golem Rúnico',
@@ -68,9 +68,34 @@ export const UNITS = {
   },
   feiticeira: {
     name: 'Feiticeira do Abismo',
-    hp: 620, damage: 24, hitSpeed: 0.4, range: 5.5, speed: 1.0,
+    hp: 580, damage: 22, hitSpeed: 0.4, range: 5.5, speed: 1.0,
     radius: 0.5, mass: 4, targets: 'both',
     ability: { type: 'ramp', stages: [1, 3, 8], stageTime: 2.0 },
+  },
+  esqueleto: {
+    name: 'Esqueleto Errante',
+    hp: 72, damage: 62, hitSpeed: 1.0, range: 0.45, speed: 1.25,
+    radius: 0.3, mass: 1, targets: 'ground',
+  },
+  gigante: {
+    name: 'Gigante da Colina',
+    hp: 2050, damage: 145, hitSpeed: 1.5, range: 0.75, speed: 0.75,
+    radius: 0.75, mass: 15, targets: 'buildings',
+  },
+  atiradora: {
+    name: 'Atiradora Real',
+    hp: 350, damage: 94, hitSpeed: 1.15, range: 6.0, speed: 1.0,
+    radius: 0.45, mass: 4, targets: 'both', projectile: { kind: 'bolt', speed: 15 },
+  },
+  berserker: {
+    name: 'Berserker do Norte',
+    hp: 1000, damage: 120, hitSpeed: 1.5, range: 0.6, speed: 1.0,
+    radius: 0.5, mass: 7, targets: 'ground', spin: 1.3,
+  },
+  canhao: {
+    name: 'Canhão de Bronze',
+    building: true, hp: 720, lifetime: 30, damage: 92, hitSpeed: 0.9, range: 5.5, speed: 0,
+    radius: 0.8, mass: 999, targets: 'ground', projectile: { kind: 'cannon', speed: 14 },
   },
   balista: {
     name: 'Balista',

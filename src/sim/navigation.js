@@ -22,42 +22,56 @@ function bestBridge(ux, tx) {
   return best;
 }
 
-/** Retorna o próximo ponto de passagem para uma unidade chegar a (tx, ty). */
+/** Faixa X utilizável da ponte para uma unidade de raio r (o corpo inteiro fica sobre as tábuas). */
+function laneOnBridge(b, r) {
+  const inner = Math.max(0.1, b.half - r * 0.6);
+  return [b.x - inner, b.x + inner];
+}
+
+/** Retorna o próximo ponto de passagem para uma unidade chegar a (tx, ty). Terrestres só cruzam pelas pontes. */
 export function waypoint(unit, tx, ty) {
-  if (unit.air || unit.riverJump) return { x: tx, y: ty };
+  if (unit.air) return { x: tx, y: ty };
+  const r = unit.radius || 0.5;
   const us = bankSide(unit.y);
   const ts = bankSide(ty);
   if (us === 0) {
-    // Sobre a ponte: siga em frente para a margem do alvo.
+    // Sobre a ponte: siga reto até a margem do alvo.
     if (ts === 0) return { x: tx, y: ty };
     const b = bridgeAt(unit.x) || bestBridge(unit.x, tx);
-    const exitY = ts < 0 ? RIVER_TOP - 0.4 : RIVER_BOTTOM + 0.4;
-    return { x: clamp(unit.x, b.x - b.half + 0.3, b.x + b.half - 0.3), y: exitY };
+    const [x0, x1] = laneOnBridge(b, r);
+    const exitY = ts < 0 ? RIVER_TOP - 0.6 - r * 0.4 : RIVER_BOTTOM + 0.6 + r * 0.4;
+    return { x: clamp(unit.x, x0, x1), y: exitY };
   }
   if (ts === 0 || us === ts) return { x: tx, y: ty };
   const b = bestBridge(unit.x, tx);
+  const [x0, x1] = laneOnBridge(b, r);
   const bankY = us > 0 ? RIVER_BOTTOM : RIVER_TOP;
-  if (Math.abs(unit.x - b.x) <= b.half - 0.3 && Math.abs(unit.y - bankY) < 1.2) {
-    // Alinhado com a ponte: atravesse.
-    return { x: unit.x, y: us > 0 ? RIVER_TOP - 0.4 : RIVER_BOTTOM + 0.4 };
+  if (unit.x >= x0 - 0.05 && unit.x <= x1 + 0.05 && Math.abs(unit.y - bankY) < 1.4) {
+    // Alinhado com a ponte: atravesse em linha reta.
+    return { x: clamp(unit.x, x0, x1), y: us > 0 ? RIVER_TOP - 0.6 : RIVER_BOTTOM + 0.6 };
   }
-  return { x: b.x, y: bankY + us * 0.7 };
+  // Primeiro vá até a cabeceira da ponte do seu lado.
+  return { x: b.x, y: bankY + us * 0.9 };
 }
 
-/** Corrige posições inválidas (dentro do rio fora das pontes ou fora da arena). */
+/**
+ * Corrige posições inválidas: fora da arena, ou com o corpo sobre a água fora de uma ponte.
+ * Tropas terrestres nunca ficam no rio — se forem empurradas para lá, voltam à margem ou deslizam para dentro da ponte.
+ */
 export function constrain(unit) {
   const r = unit.radius;
   unit.x = clamp(unit.x, r * 0.5, ARENA_W - r * 0.5);
   unit.y = clamp(unit.y, r * 0.5, ARENA_H - r * 0.5);
-  if (unit.air || unit.riverJump) return;
-  if (unit.y > RIVER_TOP && unit.y < RIVER_BOTTOM) {
-    const wasOnBridge = unit.py > RIVER_TOP && unit.py < RIVER_BOTTOM && bridgeAt(unit.px);
-    const b = bridgeAt(unit.x);
-    if (b) return;
-    if (wasOnBridge) {
-      unit.x = clamp(unit.x, wasOnBridge.x - wasOnBridge.half + 0.05, wasOnBridge.x + wasOnBridge.half - 0.05);
-    } else {
-      unit.y = unit.py <= (RIVER_TOP + RIVER_BOTTOM) / 2 ? RIVER_TOP : RIVER_BOTTOM;
-    }
+  if (unit.air) return;
+  const top = RIVER_TOP - r * 0.4;
+  const bot = RIVER_BOTTOM + r * 0.4;
+  if (unit.y <= top || unit.y >= bot) return;
+  let near = null;
+  for (const b of BRIDGES) if (Math.abs(unit.x - b.x) <= b.half + r * 0.3) near = b;
+  if (near) {
+    const [x0, x1] = laneOnBridge(near, r);
+    unit.x = clamp(unit.x, x0, x1);
+    return;
   }
+  unit.y = unit.py <= (RIVER_TOP + RIVER_BOTTOM) / 2 ? top : bot;
 }

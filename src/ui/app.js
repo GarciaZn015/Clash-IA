@@ -195,7 +195,7 @@ export class App {
       r.offX = 0;
       r.offY = canvas.height / 2 - 16 * r.scale;
       r.buildBackground();
-      r.render(m, 1, { time: 0, particles: [], rings: [], texts: [], meteors: [], arrows: [], beams: [], slashes: [], shake: 0, flash: 0, banner: null }, {});
+      r.render(m, 1, { time: 0, particles: [], rings: [], texts: [], meteors: [], arrows: [], beams: [], slashes: [], zaps: [], shake: 0, flash: 0, banner: null }, {});
     } catch (err) {
       console.warn('Prévia da arena indisponível', err);
     }

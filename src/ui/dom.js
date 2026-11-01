@@ -53,9 +53,9 @@ const SPEED_LABEL = (v) => (v >= 1.9 ? 'Muito rápida' : v >= 1.4 ? 'Rápida' : 
 
 export function cardEl(card, { level = null, copies = null, needed = null, locked = false, onClick, extraClass = '', showName = true } = {}) {
   const r = RARITIES[card.rarity];
-  const el = h('div', { class: `card ${locked ? 'locked' : ''} ${extraClass}`, style: { '--rc': r.color }, role: 'button', tabindex: '0', 'data-card': card.id, 'aria-label': `${card.name}, custo ${card.cost}` },
+  const el = h('div', { class: `card r-${card.rarity} ${locked ? 'locked' : ''} ${extraClass}`, style: { '--rc': r.color }, role: 'button', tabindex: '0', 'data-card': card.id, 'aria-label': `${card.name}, custo ${card.cost}` },
     h('img', { class: 'art', src: cardArtURL(card), alt: '', draggable: 'false' }),
-    h('div', { class: 'cost' }, card.cost),
+    h('div', { class: 'cost' }, h('span', {}, card.cost)),
     showName ? h('div', { class: 'name' }, card.name) : null,
   );
   if (level != null && !locked) el.append(h('div', { class: 'lv' }, `Nível ${level}`));
@@ -88,6 +88,7 @@ export function cardStatRows(card, level) {
     if (s.damage) add('Dano em torres', s.damage * (s.towerFactor ?? 0.35));
     if (s.heal) add('Cura por segundo', s.heal);
     if (s.freeze) add('Congelamento', s.freeze, (v) => `${v}s`, false);
+    if (s.stun) add('Atordoamento', s.stun, (v) => `${v}s`, false);
     if (s.rage) add('Bônus de velocidade', s.rage * 100, (v) => `+${Math.round(v)}%`, false);
     if (s.duration) add('Duração', s.duration, (v) => `${v}s`, false);
     add('Raio', s.radius, (v) => `${v} tiles`, false);
@@ -96,7 +97,7 @@ export function cardStatRows(card, level) {
   const u = getUnit(card.unitId);
   add('Vida', u.hp);
   if (u.shield) add('Escudo', u.shield);
-  if (u.damage) add(u.splash ? 'Dano em área' : 'Dano', u.damage);
+  if (u.damage) add(u.splash ? 'Dano em área' : u.spin ? 'Dano giratório (área)' : 'Dano', u.damage);
   if (u.damage && u.hitSpeed) add('Dano por segundo', u.damage / u.hitSpeed);
   if (u.hitSpeed) add('Velocidade de ataque', u.hitSpeed, (v) => `${v}s`, false);
   if (u.range) add('Alcance', u.range, (v) => (v < 1 ? 'Corpo a corpo' : `${v} tiles`), false);

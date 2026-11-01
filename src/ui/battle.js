@@ -2,6 +2,8 @@
 import { TICK, MAX_ENERGY, SIDE_PLAYER } from '../core/constants.js';
 import { createRng } from '../core/rng.js';
 import { getCard } from '../data/cards.js';
+import { getUnit } from '../data/units.js';
+import { snapDeploy } from '../sim/placement.js';
 import { AI_DECKS, DIFFICULTIES } from '../data/decks.js';
 import { arenaForLevel } from '../data/modes.js';
 import { Match, PHASE } from '../sim/match.js';
@@ -116,6 +118,7 @@ export class Battle {
       this.fx.update(dt);
     }
     try {
+      this.renderer.ensureSize();
       this.renderer.render(this.match, Math.min(1, this.acc / TICK), this.fx, { preview: this.preview });
     } catch (err) {
       console.error('Erro de renderização', err);
@@ -169,7 +172,8 @@ export class Battle {
     this.x2El.classList.toggle('on', m.energyMultiplier > 1 && m.phase !== PHASE.ENDED);
     this.x2El.textContent = ot ? 'x2 Éter · Morte súbita' : 'x2 Éter';
     const e = p.energy;
-    this.energyNum.textContent = Math.floor(e + 1e-6);
+    const en = String(Math.floor(e + 1e-6));
+    if (this.energyNum.textContent !== en) this.energyNum.replaceChildren(h('span', {}, en));
     this.energyFill.style.width = `${(e / MAX_ENERGY) * 100}%`;
     const key = p.deck.hand.join(',') + '|' + p.deck.next;
     if (key !== this.handKey) this.renderHand();
@@ -271,7 +275,12 @@ export class Battle {
         this.app.audio.play('select');
       }
     });
-    this.on(window, 'resize', () => this.renderer.resize());
+    this.on(window, 'resize', () => this.renderer.ensureSize());
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObs = new ResizeObserver(() => this.renderer.ensureSize());
+      this.resizeObs.observe(this.canvas);
+      this.listeners.push(() => this.resizeObs.disconnect());
+    }
     this.on(document, 'visibilitychange', () => {
       if (document.hidden && !this.ended) this.togglePause(true);
     });
@@ -288,9 +297,15 @@ export class Battle {
       this.preview = null;
       return;
     }
-    const x = Math.round(w.x * 2) / 2;
-    const y = Math.round(w.y * 2) / 2;
+    let x = Math.round(w.x * 2) / 2;
+    let y = Math.round(w.y * 2) / 2;
     const card = getCard(p.deck.hand[this.selected]);
+    if (card.type !== 'spell') {
+      // Solta a tropa no ponto válido mais próximo (ex.: tocou um pouco dentro do rio).
+      const u = getUnit(card.unitId);
+      const snapped = snapDeploy(this.match, SIDE_PLAYER, x, y, { building: !!u.building, radius: u.radius });
+      if (snapped) ({ x, y } = snapped);
+    }
     const check = this.match.canPlay(SIDE_PLAYER, this.selected, x, y);
     this.preview = { card, x, y, valid: check.ok, reason: check.reason };
   }
@@ -298,6 +313,7 @@ export class Battle {
   tryPlay(x, y) {
     const res = this.match.playCard(SIDE_PLAYER, this.selected, x, y);
     if (res.ok) {
+      try { navigator.vibrate?.(15); } catch { /* sem suporte */ }
       this.selected = -1;
       this.preview = null;
     } else {

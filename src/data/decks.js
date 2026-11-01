@@ -9,11 +9,13 @@ export const AI_DECKS = {
   normal: [
     ['escudeiro', 'arqueiras', 'mago', 'javali', 'meteoro', 'balista', 'diabretes', 'grifo'],
     ['lobos', 'bombardeiro', 'grifo', 'javali', 'saraivada', 'fonte', 'escudeiro', 'corvos'],
+    ['gigante', 'atiradora', 'esqueletos', 'faisca', 'canhao', 'bombardeiro', 'meteoro', 'corvos'],
   ],
   hard: [
     ['golem', 'mago', 'dragonete', 'diabretes', 'meteoro', 'saraivada', 'hino', 'arqueiras'],
     ['javali', 'geada', 'balista', 'feiticeira', 'escudeiro', 'corvos', 'meteoro', 'saraivada'],
     ['golem', 'feiticeira', 'grifo', 'lobos', 'forja', 'meteoro', 'bombardeiro', 'fonte'],
+    ['gigante', 'berserker', 'atiradora', 'esqueletos', 'faisca', 'canhao', 'hino', 'meteoro'],
   ],
 };
 

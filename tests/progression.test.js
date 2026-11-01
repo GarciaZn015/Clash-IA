@@ -16,9 +16,9 @@ const fakeResult = (winner, crowns = [1, 0]) => ({
   stats: [0, 1].map(() => ({ cardsPlayed: 20, energySpent: 70, troopsDeployed: 15, spellsCast: 3, airDeployed: 2, buildingsPlaced: 0, damageDealt: 5000, towerDamage: 1500, unitsKilled: 20, towersDestroyed: crowns[0], energyWasted: 0 })),
 });
 
-test('perfil novo: 8 cartas iniciais, baralho válido', () => {
+test('perfil novo: cartas iniciais desbloqueadas e baralho válido', () => {
   const p = createProfile();
-  assert.equal(Object.keys(p.cards).length, 8);
+  assert.equal(Object.keys(p.cards).length, CARDS.filter((c) => c.unlockLevel <= 1).length);
   assert.ok(validateDeck(p, activeDeck(p)).ok);
 });
 

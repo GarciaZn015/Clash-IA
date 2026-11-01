@@ -4,6 +4,7 @@ import { Match, PHASE } from '../src/sim/match.js';
 import { TICK, RIVER_TOP, RIVER_BOTTOM, BRIDGES, MAX_ENERGY } from '../src/core/constants.js';
 import { newMatch, play, run, clearUnits, slotFor, DECK_A, DECK_B } from './helpers.js';
 import { STARTER_DECK } from '../src/data/decks.js';
+import { getCard } from '../src/data/cards.js';
 
 test('contagem regressiva bloqueia jogadas e depois inicia a partida', () => {
   const m = new Match({ decks: [STARTER_DECK, STARTER_DECK], seed: 1 });
@@ -169,7 +170,8 @@ test('feitiços: dano em área, dano reduzido em torre, congelamento e cura', ()
   const tower = m.towers.find((t) => t.side === 1 && t.lane === 0);
   assert.ok(play(m, 0, 'meteoro', 4.5, 7.5).ok);
   run(m, 1.2);
-  assert.ok(tower.hp < tower.maxHp && tower.maxHp - tower.hp <= 400 * 0.35 + 1, 'dano reduzido na torre');
+  const met = getCard('meteoro').spell;
+  assert.ok(tower.hp < tower.maxHp && tower.maxHp - tower.hp <= met.damage * met.towerFactor + 1, 'dano reduzido na torre');
   assert.ok(units.every((u) => u.dead), 'meteoro elimina o enxame');
   const m2 = newMatch({ deck0: DECK_B });
   clearUnits(m2);
@@ -260,4 +262,73 @@ test('determinismo: mesma semente e mesmos comandos geram o mesmo resultado', ()
     return JSON.stringify(m.entities.map((e) => [e.defId, Math.round(e.hp), e.x.toFixed(3)]));
   };
   assert.equal(sim(), sim());
+});
+
+test('em partidas completas, nenhuma tropa terrestre pisa no rio fora das pontes', async () => {
+  const { AIController } = await import('../src/ai/ai.js');
+  const { AI_DECKS } = await import('../src/data/decks.js');
+  for (let seed = 1; seed <= 3; seed++) {
+    const m = new Match({ decks: [AI_DECKS.hard[seed % 4], AI_DECKS.normal[seed % 3]], seed, rules: { countdown: 0 } });
+    const ais = [new AIController(m, 0, 'hard', seed), new AIController(m, 1, 'normal', seed + 9)];
+    let checks = 0;
+    while (!m.isOver) {
+      for (const a of ais) a.update(TICK);
+      m.step(TICK);
+      m.drainEvents();
+      for (const e of m.entities) {
+        if (e.kind !== 'unit' || e.air) continue;
+        const r = e.radius;
+        if (e.y > RIVER_TOP - r * 0.4 + 1e-6 && e.y < RIVER_BOTTOM + r * 0.4 - 1e-6) {
+          checks++;
+          const ok = BRIDGES.some((b) => Math.abs(e.x - b.x) + r * 0.6 <= b.half + 1e-6 || (b.half - r * 0.6 <= 0.1 && Math.abs(e.x - b.x) <= 0.1 + 1e-6));
+          assert.ok(ok, `${e.defId} sobre a água em x=${e.x.toFixed(2)} y=${e.y.toFixed(2)}`);
+        }
+      }
+    }
+    assert.ok(checks > 0, 'houve travessias');
+  }
+});
+
+test('Cavaleiro Javali também precisa usar a ponte', () => {
+  const m = newMatch();
+  clearUnits(m);
+  const j = m.spawnUnit('javali', 0, 9, 18.5, 1, null, 0);
+  let usedBridge = false;
+  run(m, 8, () => {
+    if (!j.dead && j.y > RIVER_TOP && j.y < RIVER_BOTTOM) {
+      assert.ok(BRIDGES.some((b) => Math.abs(j.x - b.x) <= b.half));
+      usedBridge = true;
+    }
+  });
+  assert.ok(usedBridge);
+});
+
+test('posicionamento por toque: ponto levemente inválido é ajustado para a borda válida mais próxima', async () => {
+  const { snapDeploy } = await import('../src/sim/placement.js');
+  const m = newMatch();
+  assert.deepEqual(snapDeploy(m, 0, 9, 20), { x: 9, y: 20 }, 'ponto válido não muda');
+  const river = snapDeploy(m, 0, 6, 16.5);
+  assert.equal(river.y, 17.5, 'tocar no rio solta na margem do jogador');
+  const tower = snapDeploy(m, 0, 3.5, 25.5);
+  assert.ok(tower && Math.hypot(tower.x - 3.5, tower.y - 25.5) >= 1.5 + 0.35, 'tocar na torre solta ao lado dela');
+  assert.equal(snapDeploy(m, 0, 9, 4), null, 'longe demais no campo inimigo: rejeita');
+});
+
+test('Faísca atordoa e reinicia o dano crescente; Berserker acerta todos ao redor', () => {
+  const m = newMatch({ deck0: ['faisca', 'berserker', 'escudeiro', 'arqueiras', 'lobos', 'diabretes', 'corvos', 'bombardeiro'] });
+  clearUnits(m);
+  const f = m.spawnUnit('feiticeira', 1, 9, 10, 1, null, 0);
+  f.rampTime = 5;
+  f.rampStage = 2;
+  assert.ok(play(m, 0, 'faisca', 9, 10).ok);
+  run(m, 0.05);
+  assert.equal(f.rampStage, 0);
+  assert.ok(f.frozenT > 0.3);
+  clearUnits(m);
+  const b = m.spawnUnit('berserker', 0, 9, 22, 1, null, 0);
+  const imps = [m.spawnUnit('diabrete', 1, 8.3, 22, 1, null, 0), m.spawnUnit('diabrete', 1, 9.7, 22, 1, null, 0), m.spawnUnit('diabrete', 1, 9, 21.3, 1, null, 0)];
+  for (const i of imps) i.speed = 0;
+  run(m, 2);
+  assert.ok(imps.every((i) => i.dead), 'giro atingiu os três');
+  assert.ok(!b.dead);
 });

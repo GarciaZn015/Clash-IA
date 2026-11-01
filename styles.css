@@ -277,47 +277,79 @@ h3 { font-size: 15px; margin-bottom: 8px; }
 
 /* ------------------------------------------------------------ cartas */
 
-.card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
 .card {
+  --rc: #b8c4d6;
+  --rc2: #6f7f99;
   position: relative;
-  border-radius: 10px;
-  padding: 3px;
-  background: var(--rc, #b8c4d6);
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
-  transition: transform 0.1s, filter 0.15s, box-shadow 0.15s;
+  border-radius: 12px;
+  padding: 3px 3px 2px;
+  background: linear-gradient(160deg, #ffffff 0%, var(--rc) 22%, var(--rc2) 100%);
+  box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.35), 0 4px 0 rgba(0, 0, 0, 0.45), 0 6px 10px rgba(0, 0, 0, 0.25);
+  transition: transform 0.12s, filter 0.15s, box-shadow 0.15s;
   text-align: center;
   cursor: pointer;
 }
+.card.r-comum { --rc: #c9d4e4; --rc2: #6b7c98; }
+.card.r-rara { --rc: #ffc25a; --rc2: #c46a14; }
+.card.r-epica { --rc: #d49bff; --rc2: #7a2fc0; }
+.card.r-lendaria { --rc: #7ff5e4; --rc2: #3a7bd5; background: linear-gradient(160deg, #fff6c0, #7ff5e4 25%, #c79bff 60%, #3a7bd5); }
 .card:hover { filter: brightness(1.08); }
-.card:active { transform: scale(0.96); }
-.card .art { width: 100%; aspect-ratio: 1; border-radius: 7px; display: block; background: #222; }
+.card:active { transform: scale(0.95); }
+.card .art {
+  width: 100%;
+  aspect-ratio: 1 / 1.2;
+  border-radius: 9px;
+  display: block;
+  background: #222;
+  border: 2px solid rgba(15, 10, 25, 0.55);
+  object-fit: cover;
+}
 .card .cost {
   position: absolute;
-  top: -5px;
-  left: -5px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
+  top: -7px;
+  left: -7px;
+  width: 27px;
+  height: 27px;
   display: grid;
   place-items: center;
-  font-weight: 900;
-  font-size: 14px;
-  color: #fff;
-  background: radial-gradient(circle at 35% 30%, #e7a8ff, #9a3fd8 60%, #5f1e94);
-  border: 2px solid #2a0d44;
-  text-shadow: 0 1px 1px #000;
+  border-radius: 50% 0 50% 50%;
+  transform: rotate(-45deg);
+  background: radial-gradient(circle at 35% 30%, #ffb5ef, #d23fb0 55%, #7b1667);
+  border: 2px solid #3c0833;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
 }
-.card .name { font-size: 10.5px; font-weight: 900; color: #10131f; line-height: 1.1; padding: 3px 1px 1px; min-height: 26px; display: flex; align-items: center; justify-content: center; }
-.card .lv { font-size: 10px; font-weight: 900; color: #10131f; }
-.card .copies { height: 12px; border-radius: 6px; background: rgba(0, 0, 0, 0.45); margin: 2px 2px 1px; position: relative; overflow: hidden; }
-.card .copies i { position: absolute; inset: 0 auto 0 0; background: #4cc274; }
-.card .copies span { position: relative; font-size: 9px; font-weight: 900; color: #fff; line-height: 12px; display: block; }
-.card .copies.full i { background: linear-gradient(90deg, #ffd978, #e9a92a); }
-.card.locked { filter: grayscale(1) brightness(0.55); }
+.card .cost span { transform: rotate(45deg); font-weight: 900; font-size: 15px; color: #fff; text-shadow: 0 1px 0 #3c0833, 0 0 3px #3c0833; }
+.card .name {
+  font-size: 10.5px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 0 #000, 0 0 3px rgba(0, 0, 0, 0.8);
+  line-height: 1.1;
+  padding: 3px 1px 2px;
+  min-height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card .lv {
+  font-size: 10px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 1px 0 #000;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 6px;
+  margin: 0 6px 2px;
+}
+.card .copies { height: 13px; border-radius: 7px; background: rgba(0, 0, 0, 0.55); margin: 2px 2px 1px; position: relative; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6); }
+.card .copies i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(180deg, #8ff0a4, #2f9e52); }
+.card .copies span { position: relative; font-size: 9px; font-weight: 900; color: #fff; line-height: 13px; display: block; text-shadow: 0 1px 0 #000; }
+.card .copies.full i { background: linear-gradient(180deg, #ffe58f, #e09a1e); }
+.card.locked { filter: grayscale(1) brightness(0.5); }
 .card.locked .lockmsg { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 900; font-size: 12px; color: #fff; text-shadow: 0 1px 3px #000; }
-.card.in-deck { box-shadow: 0 0 0 3px var(--gold), 0 3px 0 rgba(0, 0, 0, 0.35); }
-.card.swap-target { animation: wiggle 0.5s ease-in-out infinite; box-shadow: 0 0 0 3px #6fb0ff; }
-.card .badge-up { position: absolute; top: -6px; right: -6px; background: var(--green); color: #fff; font-size: 10px; font-weight: 900; border-radius: 8px; padding: 1px 5px; border: 2px solid #0f3a1c; }
+.card.in-deck { box-shadow: 0 0 0 3px var(--gold), 0 4px 0 rgba(0, 0, 0, 0.45); }
+.card.swap-target { animation: wiggle 0.5s ease-in-out infinite; box-shadow: 0 0 0 3px #6fb0ff, 0 4px 0 rgba(0, 0, 0, 0.45); }
+.card .badge-up { position: absolute; top: -7px; right: -7px; background: linear-gradient(180deg, #8ff0a4, #2f9e52); color: #fff; font-size: 11px; font-weight: 900; border-radius: 9px; padding: 1px 6px; border: 2px solid #0f3a1c; animation: pulse2 1s infinite; }
 @keyframes wiggle { 0%, 100% { transform: rotate(-1.5deg); } 50% { transform: rotate(1.5deg); } }
 
 .tabs { display: flex; gap: 6px; margin-bottom: 10px; }
@@ -422,15 +454,16 @@ input[type='range'] { width: 100%; accent-color: var(--gold); }
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: calc(6px + env(safe-area-inset-top)) 10px 6px;
-  background: linear-gradient(180deg, #232948, #191e35);
-  border-bottom: 2px solid #0a0c18;
+  padding: calc(6px + env(safe-area-inset-top)) 10px 7px;
+  background: linear-gradient(180deg, #2c3566, #1a1f3c 70%, #12152a);
+  border-bottom: 3px solid #b98a2c;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
   z-index: 2;
 }
 .bhud .who { font-weight: 900; font-size: 13px; line-height: 1.15; }
 .crowns { display: flex; gap: 2px; }
 .crowns svg { width: 20px; height: 20px; }
-.timer { font-family: var(--font-title); font-weight: 900; font-size: 22px; min-width: 76px; text-align: center; padding: 2px 8px; border-radius: 10px; background: #0f1222; border: 1px solid #343b63; }
+.timer { font-family: var(--font-title); font-weight: 900; font-size: 22px; min-width: 84px; text-align: center; padding: 2px 10px 3px; border-radius: 12px; background: linear-gradient(180deg, #151933, #0b0e1e); border: 2px solid #b98a2c; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 2px 0 rgba(0, 0, 0, 0.4); text-shadow: 0 2px 0 #000; }
 .timer.ot { color: #ff9a3c; border-color: #ff9a3c; }
 .timer.low { color: #ff6a5a; }
 .timer .lbl { display: block; font-family: var(--font); font-size: 9px; color: var(--muted); font-weight: 800; letter-spacing: 0.04em; }
@@ -442,14 +475,17 @@ input[type='range'] { width: 100%; accent-color: var(--gold); }
 .field-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; }
 
 .hand-bar {
-  padding: 6px 8px calc(8px + env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, #232948, #151a2e);
-  border-top: 2px solid #0a0c18;
+  padding: 10px 8px calc(8px + env(safe-area-inset-bottom));
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.06) 0 2px, transparent 2px 46px),
+    linear-gradient(180deg, #6b4428, #4a2c18 60%, #351e10);
+  border-top: 3px solid #b98a2c;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.45), inset 0 2px 0 rgba(255, 220, 160, 0.15);
   z-index: 2;
 }
 .hand, .energy { max-width: 470px; margin-left: auto; margin-right: auto; }
 .hand { display: grid; grid-template-columns: 0.72fr repeat(4, 1fr); gap: 6px; align-items: end; }
-.hand .next { text-align: center; font-size: 10px; font-weight: 900; color: var(--muted); }
+.hand .next { text-align: center; font-size: 10px; font-weight: 900; color: #f3dcb5; text-shadow: 0 1px 0 #000; }
 .hand .next .card { transform: scale(0.92); cursor: default; }
 .hand .slot .card { touch-action: none; }
 .hand .slot .card.sel { transform: translateY(-10px); box-shadow: 0 0 0 3px #fff, 0 8px 18px rgba(0, 0, 0, 0.5); }
@@ -459,9 +495,12 @@ input[type='range'] { width: 100%; accent-color: var(--gold); }
 .hand .slot .card.new { animation: deal 0.3s ease-out; }
 
 .energy { display: flex; align-items: center; gap: 8px; margin-top: 7px; }
-.energy .num { width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; font-weight: 900; font-size: 18px; background: radial-gradient(circle at 35% 30%, #e7a8ff, #9a3fd8 60%, #5f1e94); border: 2px solid #2a0d44; text-shadow: 0 1px 2px #000; }
-.energy .bar { flex: 1; height: 22px; border-radius: 11px; background: #0f1222; border: 2px solid #0a0c18; position: relative; overflow: hidden; }
-.energy .bar .fill { position: absolute; inset: 0 auto 0 0; background: linear-gradient(180deg, #e7a8ff, #a24ce0 60%, #7b2fbf); transition: width 0.08s linear; }
+.energy .num { width: 36px; height: 36px; flex: none; display: grid; place-items: center; font-weight: 900; font-size: 19px; border-radius: 50% 0 50% 50%; transform: rotate(-45deg); background: radial-gradient(circle at 35% 30%, #ffb5ef, #d23fb0 55%, #7b1667); border: 2px solid #3c0833; text-shadow: 0 1px 2px #000; box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4); }
+.energy .num > * , .energy .num { }
+.energy .num span { transform: rotate(45deg); display: block; }
+.energy .bar { flex: 1; height: 24px; border-radius: 12px; background: #1a0d18; border: 2px solid #2a1220; position: relative; overflow: hidden; box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.7); }
+.energy .bar .fill { position: absolute; inset: 0 auto 0 0; background: linear-gradient(180deg, #ffc8f3, #e04fc0 45%, #9a1f86); transition: width 0.08s linear; box-shadow: 0 0 10px rgba(255, 90, 210, 0.6); }
+.energy .bar .fill::after { content: ''; position: absolute; left: 4px; right: 4px; top: 3px; height: 5px; border-radius: 4px; background: rgba(255, 255, 255, 0.45); }
 .energy .bar .ticks { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(10, 1fr); }
 .energy .bar .ticks i { border-right: 2px solid rgba(10, 12, 24, 0.6); }
 .energy .bar .ticks i:last-child { border-right: 0; }
