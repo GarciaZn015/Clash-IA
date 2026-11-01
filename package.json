@@ -1,0 +1,18 @@
+{
+  "name": "bastioes-do-eter",
+  "version": "0.1.0",
+  "description": "Jogo de batalha estratégica em tempo real com cartas — fantasia medieval original.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.js",
+    "simulate": "node scripts/simulate.mjs",
+    "balance": "node scripts/balance.mjs",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED"
+}
